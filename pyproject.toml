@@ -13,13 +13,14 @@ termcolor = "^2.3.0"
 emoji = "^2.5.0"
 transformers = "^4.30.1"
 torch = "^2.0.1"
-langchain = "^0.0.209"
+langchain = "^0.0.304"
 jsonlines = "^3.1.0"
 tiktoken = "^0.4.0"
 openai = "^0.27.8"
 chromadb = "^0.3.26"
 rich = "^13.4.2"
 python-dotenv = "^1.0.0"
+jq = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core"]
