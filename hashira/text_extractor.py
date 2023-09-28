@@ -3,6 +3,7 @@ import json
 import os
 import re
 from typing import Dict
+from dotenv import load_dotenv
 
 import emoji
 import requests
@@ -20,12 +21,12 @@ def preprocess_text(text: str) -> str:
     Returns:
         El texto preprocesado.
     """
-    text = re.sub(r"<[^>]*>", "", text)
-    text = re.sub(r"http\S+|www.\S+", "", text)
+    text = re.sub(r"<[^>]*>", "", text)  # Elimina etiquetas HTML.
+    text = re.sub(r"http\S+|www.\S+", "", text)  # Elimina URLs.
     text = re.sub(r"Copyright.*", "", text)
-    text = text.replace("\n", " ")
-    text = emoji.demojize(text)
-    text = re.sub(r":[a-z_&+-]+:", "", text)
+    text = text.replace("\n", " ")  # Elimina saltos de línea
+    text = emoji.demojize(text)  # Convierte emojis a texto.
+    text = re.sub(r":[a-z_&+-]+:", "", text)  # Elimina emojis.
     return text
 
 
@@ -44,8 +45,10 @@ def download_file(url: str, repo_info: dict, jsonl_file_name: str) -> None:
 
     if text is not None and isinstance(text, str):
         text = preprocess_text(text)
-        text = re.sub(r"\s+", " ", text)
-        text = text.strip()
+        text = re.sub(r"\s+", " ", text)  # Elimina espacios en blanco.
+        text = (
+            text.strip()
+        )  # Elimina espacios en blanco al inicio y al final del texto.
 
         file_dict = {
             "title": filename,
@@ -125,6 +128,7 @@ def main():
     """
     Función principal que se ejecuta cuando se inicia el script.
     """
+    load_dotenv()
     config = load_config()
     github_token = os.getenv("GITHUB_TOKEN")
 
