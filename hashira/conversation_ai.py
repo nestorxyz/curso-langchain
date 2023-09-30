@@ -1,10 +1,10 @@
-from langchain.document_loaders import JSONLoader
+from langchain.document_loaders import JSONLoader  # importar clase
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from utils import get_file_path
 
 
-# metadata: title, repo_owner, repo_name
+# funcion metadata para retornar title, repo_owner, repo_name en la metadata del documento
 def metadata_func(record: dict, metadata: dict) -> dict:
     metadata["title"] = record.get("title")
     metadata["repo_owner"] = record.get("repo_owner")
@@ -16,10 +16,10 @@ def metadata_func(record: dict, metadata: dict) -> dict:
 def load_documents(path):
     loader = JSONLoader(
         path,
-        json_lines=True,
-        jq_schema=".",
-        content_key="text",
-        metadata_func=metadata_func,
+        json_lines=True,  # indica que el archivo es un jsonl
+        jq_schema=".",  # indica que el jsonl tiene un solo elemento por linea, más info en https://python.langchain.com/docs/modules/data_connection/document_loaders/json#common-json-structures-with-jq-schema
+        content_key="text",  # indica que el contenido del documento está en la llave "text"
+        metadata_func=metadata_func,  # indica que la función metadata_func se usará para obtener la metadata del documento
     )
     data = loader.load()
 
