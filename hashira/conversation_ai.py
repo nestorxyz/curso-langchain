@@ -1,7 +1,17 @@
+# model imports
 from langchain.document_loaders import JSONLoader  # importar clase
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Chroma
 
+# external imports
+from rich.console import Console
+
+# local imports
 from utils import get_file_path
+
+console = Console()
+recreate_chroma_db = False
 
 
 # funcion metadata para retornar title, repo_owner, repo_name en la metadata del documento
@@ -30,10 +40,23 @@ def load_documents(path):
     return text_splitter.split_documents(data)
 
 
+def get_chroma_db(embeddings, documents, path):
+    if recreate_chroma_db:
+        console.print("Creating Chroma DB")
+        return Chroma.from_documents(
+            documents=documents, embedding=embeddings, persist_directory=path
+        )
+    else:
+        console.print("Loading Chroma DB")
+        return Chroma(persist_directory=path, embedding_function=embeddings)
+
+
 def main():
     documents = load_documents(get_file_path())
-    print(len(documents))
-    print(documents[0])
+    embeddings = HuggingFaceEmbeddings()
+
+    vectorstore_chroma = get_chroma_db(embeddings, documents, "chroma_docs")
+    console.print(f"[green]Documents {len(documents)} loaded[/green]")
 
 
 if __name__ == "__main__":
