@@ -4,7 +4,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import Chroma, VectorStore
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA, ConversationalRetrievalChain
+from langchain.chains import (
+    RetrievalQA,
+    ConversationalRetrievalChain,
+    ConversationChain,
+)
+from langchain.chains.conversation.memory import ConversationSummaryMemory
 
 # external imports
 from rich.console import Console
@@ -15,7 +20,7 @@ from utils import get_file_path, get_query_from_user
 
 console = Console()
 recreate_chroma_db = False
-chat_type = "memory_chat"
+chat_type = "summary_memory_chat"
 
 
 # funcion metadata para retornar title, repo_owner, repo_name en la metadata del documento
@@ -76,6 +81,13 @@ def process_memory_query(
     return result["answer"]
 
 
+def process_summary_memory_query(query: str, llm: ChatOpenAI, summary_memory: any):
+    conversation = ConversationChain(llm=llm, memory=summary_memory, verbose=True)
+    console.print("[yellow]Thinking...[/yellow]")
+    result = conversation.predict(input=query)
+    return result
+
+
 def run_conversation(vectorstore: VectorStore, chat_type: str, llm: ChatOpenAI):
     console.print(
         "[blue]hi!! what do you want to ask me about transformers and artificial intelligence?[/blue]"
@@ -89,10 +101,15 @@ def run_conversation(vectorstore: VectorStore, chat_type: str, llm: ChatOpenAI):
         console.print(
             "[blue]You are using the chat in memory mode, so i will remember the chat history[/blue]"
         )
+    elif chat_type == "summary_memory_chat":
+        console.print(
+            "[blue]You are using the chat in summary memory mode, so i will remember a summary of the chat history[/blue]"
+        )
 
     retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
     chat_history = []
+    summary_memory = ConversationSummaryMemory(llm=llm)
 
     while True:
         console.print("[blue]You:[/blue]")
@@ -105,6 +122,10 @@ def run_conversation(vectorstore: VectorStore, chat_type: str, llm: ChatOpenAI):
             response = process_qa_query(query, llm, retriever)
         elif chat_type == "memory_chat":
             response = process_memory_query(query, llm, retriever, chat_history)
+        elif chat_type == "summary_memory_chat":
+            response = process_summary_memory_query(
+                query, llm, summary_memory=summary_memory
+            )
 
         console.print(f"[red]AI:[/red] {response}")
 
