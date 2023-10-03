@@ -2,16 +2,20 @@
 from langchain.document_loaders import JSONLoader  # importar clase
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
+from langchain.vectorstores import Chroma, VectorStore
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import RetrievalQA
 
 # external imports
 from rich.console import Console
+from dotenv import load_dotenv
 
 # local imports
-from utils import get_file_path
+from utils import get_file_path, get_query_from_user
 
 console = Console()
 recreate_chroma_db = False
+chat_type = "qa"
 
 
 # funcion metadata para retornar title, repo_owner, repo_name en la metadata del documento
@@ -51,12 +55,55 @@ def get_chroma_db(embeddings, documents, path):
         return Chroma(persist_directory=path, embedding_function=embeddings)
 
 
+def process_qa_query(query: str, llm: ChatOpenAI, retriever: any):
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm, chain_type="stuff", retriever=retriever
+    )
+    console.print("[yellow]Thinking...[/yellow]")
+    return qa_chain.run(query)
+
+
+def run_conversation(vectorstore: VectorStore, chat_type: str, llm: ChatOpenAI):
+    console.print(
+        "[blue]hi!! what do you want to ask me about transformers and artificial intelligence?[/blue]"
+    )
+
+    if chat_type == "qa":
+        console.print(
+            "[blue]You are using the chat in question-answer mode, so i won't remember the chat history[/blue]"
+        )
+
+    retriever = vectorstore.as_retriever()
+
+    while True:
+        console.print("[blue]You:[/blue]")
+        query = get_query_from_user()
+
+        if (query.lower() == "exit") or (query.lower() == "quit"):
+            break
+
+        if chat_type == "qa":
+            response = process_qa_query(query, llm, retriever)
+
+        console.print(f"[red]AI:[/red] {response}")
+
+
 def main():
+    load_dotenv()
+
     documents = load_documents(get_file_path())
     embeddings = HuggingFaceEmbeddings()
 
     vectorstore_chroma = get_chroma_db(embeddings, documents, "chroma_docs")
     console.print(f"[green]Documents {len(documents)} loaded[/green]")
+
+    llm = ChatOpenAI(
+        model="gpt-3.5-turbo",
+        temperature=0.2,
+        max_tokens=200,
+    )
+
+    run_conversation(vectorstore_chroma, chat_type, llm)
 
 
 if __name__ == "__main__":
