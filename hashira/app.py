@@ -22,7 +22,7 @@ def metadata_func(record: dict, metadata: dict) -> dict:
 
 
 def load_documents(path):
-    loader = JSONLoader(
+    loader = JSONLoader(  # JSONLoader es una clase que se encarga de cargar documentos desde un archivo jsonl
         path,
         json_lines=True,  # indica que el archivo es un jsonl
         jq_schema=".",  # indica que el jsonl tiene un solo elemento por linea, más info en https://python.langchain.com/docs/modules/data_connection/document_loaders/json#common-json-structures-with-jq-schema
@@ -68,6 +68,21 @@ def process_memory_query(
     return result["answer"]
 
 
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+if "vectorstore_chroma" not in st.session_state:
+    embeddings = HuggingFaceEmbeddings()
+    documents = load_documents(get_file_path())
+
+    st.session_state.vectorstore_chroma = get_chroma_db(
+        embeddings, documents, "chroma_docs", recreate_chroma_db=False
+    )
+    console.print("Chroma DB loaded")
+
 st.title("Chat with HugginFace Docs 🤗")
 
 with st.sidebar:
@@ -85,20 +100,6 @@ with st.sidebar:
         "What kind of chat do you want?", ("Question Answering", "Memory")
     )
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-if "vectorstore_chroma" not in st.session_state:
-    embeddings = HuggingFaceEmbeddings()
-    documents = load_documents(get_file_path())
-
-    st.session_state.vectorstore_chroma = get_chroma_db(
-        embeddings, documents, "chroma_docs", recreate_chroma_db=False
-    )
-    console.print("Chroma DB loaded")
 
 with st.chat_message("assistant"):
     st.markdown(

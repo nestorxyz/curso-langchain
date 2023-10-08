@@ -18,3 +18,6 @@ venv.bak/
 
 # Streamlit
 secrets.toml
+
+# vector bd
+chroma_docs/
