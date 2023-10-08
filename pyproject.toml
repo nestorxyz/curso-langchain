@@ -2,7 +2,7 @@
 name = "hashira"
 version = "0.1.0"
 description = ""
-authors = ["Omar U. Espejel <espejelomar@gmail.com>"]
+authors = ["Nestor Mamani <nmamanipantoja@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
