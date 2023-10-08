@@ -1,3 +1,15 @@
+---
+title: Streamlit Qa Memory Chatbot
+emoji: 🌍
+colorFrom: blue
+colorTo: red
+sdk: streamlit
+sdk_version: 1.27.2
+app_file: app.py
+pinned: false
+license: mit
+---
+
 <p align="center">
   <img src="images/hashira_cactus.png" width="300" height="300">
 </p>
@@ -27,28 +39,27 @@ El funcionamiento del proyecto se puede manipular mediante el archivo **`config.
 
 Puede instalar las dependencias y crear un entorno virtual utilizando Poetry con el siguiente comando:
 
-``` shell
+```shell
 poetry install
 ```
 
 Luego, puede ejecutar el proyecto con:
 
-``` shell
+```shell
 poetry run python hashira/ai_conversation.py
 ```
-
 
 ### **Instalación con Pip**
 
 Como alternativa, también puede instalar las dependencias utilizando Pip con el siguiente comando:
 
-``` shell
+```shell
 pip install -r requirements.txt
 ```
 
 Luego, puede ejecutar el proyecto con:
 
-``` shell
+```shell
 python hashira/ai_conversation.py
 ```
 
@@ -56,30 +67,29 @@ python hashira/ai_conversation.py
 
 Además, puede optar por utilizar Conda para la instalación. Primero, cree un nuevo entorno con Conda:
 
-``` shell
+```shell
 conda create --name myenv
 ```
 
 Luego, active el entorno:
 
-``` shell
+```shell
 conda activate myenv
 ```
 
 A continuación, instale las dependencias:
 
-``` shell
+```shell
 conda install --file requirements.txt
 ```
 
 Por último, ejecute el proyecto con:
 
-``` shell
+```shell
 python hashira/ai_conversation.py
 ```
 
 Recuerde reemplazar "myenv" con el nombre que desee para su entorno.
-
 
 ## **Contribuciones**
 
