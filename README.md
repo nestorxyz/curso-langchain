@@ -101,3 +101,4 @@ Este proyecto es de código abierto, y apreciamos cualquier contribución. Estam
 - La capacidad de trabajar con todo el código abierto, incluyendo LLMs de Hugging Face Hub.
 
 No hay pautas específicas para contribuir, sólo te pedimos que nos ayudes a hacer de este proyecto algo más útil y eficiente. ¡Gracias por tu apoyo!
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
