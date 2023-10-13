@@ -43,4 +43,5 @@ poetry run streamlit run hashira/app.py
 ## **Código base**
 El código base del proyecto fue tomado del curso de Langchain de Platzi: https://github.com/platzi/curso-langchain
 
-
+## **Blog explicando el código**
+https://blog.nestormamani.com/creacion-de-un-chatbot-conversacional-con-memoria-usando-huggingface-y-openai-streamlitui-y-chromadb-como-bd-vectorial
